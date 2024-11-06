@@ -1,5 +1,7 @@
 defmodule SentenceSnap do
+  @start_counter 73
   @min_sentence_length 100
+  @unwanted_chars ["И", "и", "Щ", "щ", "ъ"]
 
   def read_and_process(file) do
     file
@@ -7,7 +9,9 @@ defmodule SentenceSnap do
     |> normalize_whitespace()
     |> split_sentences()
     |> Enum.filter(&(String.length(&1) > @min_sentence_length))
-    |> Enum.with_index(1)
+    |> Enum.reject(&contains_unwanted_chars?/1)
+    |> Enum.filter(&starts_with_uppercase?/1)
+    |> Enum.with_index(@start_counter)
     |> Enum.map(&process_sentence(&1))
     |> Jason.encode!()
     |> write_to_file("output.json")
@@ -24,6 +28,10 @@ defmodule SentenceSnap do
     |> Enum.map(&String.trim(&1))
     |> Enum.reject(&(&1 == ""))
   end
+
+  defp contains_unwanted_chars?(sentence), do: String.contains?(sentence, @unwanted_chars)
+
+  defp starts_with_uppercase?(sentence), do: String.match?(sentence, ~r/^[[:upper:]]/)
 
   defp process_sentence({sentence, id}) do
     %{
