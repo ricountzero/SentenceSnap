@@ -21,7 +21,9 @@ defmodule SentenceSnap.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:jason, "~> 1.2"}
+      {:jason, "~> 1.2"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.1", only: [:dev], runtime: false}
     ]
   end
 end

@@ -1,4 +1,8 @@
 defmodule SentenceSnap do
+  @moduledoc """
+  The `SentenceSnap` module provides functionality for processing and manipulating sentences.
+  This module is specifically designed to handle Belarusian text quotes.
+  """
   @start_counter 73
   @min_sentence_length 100
   @unwanted_chars ["И", "и", "Щ", "щ", "ъ"]
@@ -13,7 +17,6 @@ defmodule SentenceSnap do
     |> Enum.filter(&starts_with_uppercase?/1)
     |> Enum.with_index(@start_counter)
     |> Enum.map(&process_sentence(&1))
-    |> Jason.encode!()
     |> write_to_file("output.json")
   end
 
@@ -41,7 +44,8 @@ defmodule SentenceSnap do
     }
   end
 
-  defp write_to_file(json_data, filename) do
+  defp write_to_file(data, filename) do
+    json_data = Jason.encode!(data, pretty: true)
     File.write!(filename, json_data)
   end
 end
